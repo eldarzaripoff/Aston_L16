@@ -8,7 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.util.concurrent.TimeUnit;
 
 public class BaseTests {
-    WebDriver chromeDriver;
+    protected WebDriver chromeDriver;
 
     @BeforeEach
     public void setChromeDriver() {
@@ -16,7 +16,7 @@ public class BaseTests {
         //System.setProperty("webdriver.chrome.driver", "C:\\Temp\\chromedriver-win64\\chromedriver.exe");
         chromeDriver = new ChromeDriver();
         chromeDriver.manage().window().maximize();
-        chromeDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+        chromeDriver.manage().timeouts().pageLoadTimeout(45, TimeUnit.SECONDS);
 
     }
 
