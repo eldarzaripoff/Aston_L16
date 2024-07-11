@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import ru.netology.helpers.XPaths;
+import ru.netology.driver.ChromeDriverSingleton;
 
 import java.time.Duration;
 import java.util.List;
@@ -13,63 +13,61 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MTSMainPage {
+
+    private final String IFRAME_XPATH = "//iframe[@class='bepaid-iframe']";
+
+    private final String LOGO_LIST_XPATH = "//img[contains(@src, " +
+            "'/local/templates/new_design/assets/html/images/pages/index/pay')]";
     private WebDriver chromeDriver;
     private WebDriverWait wait;
-    private WebElement cookieButton;
-    private WebElement title;
     private List<WebElement> logoList;
-    private WebElement buttonInDetails;
-    private WebElement phoneNumber;
-    private WebElement sum;
-    private WebElement continueButton;
-    private WebElement iframe;
-    private WebElement listUnrollButton;
-    private WebElement buttonForSelectOptionInList;
-    private List<WebElement> icons;
 
-    public MTSMainPage(WebDriver chromeDriver) {
-        this.chromeDriver = chromeDriver;
-        wait = new WebDriverWait(chromeDriver, Duration.ofSeconds(10));
-        this.cookieButton = chromeDriver.findElement(By.xpath(XPaths.COOKIE_BUTTON_XPATH));
-        this.title = chromeDriver.findElement(By.xpath(XPaths.TITLE_OF_FORM_XPATH));
-        this.logoList = chromeDriver.findElements(By.xpath(XPaths.LOGO_LIST_XPATH));
-        this.buttonInDetails = chromeDriver.findElement(By.xpath(XPaths.BUTTON_IN_DETAILS_XPATH));
-        this.listUnrollButton = chromeDriver.findElement(By.xpath(XPaths.BUTTON_FOR_LIST_UNROLL_XPATH));
+    public MTSMainPage() {
+        this.chromeDriver = ChromeDriverSingleton.getInstance().getDriver();
+        wait = new WebDriverWait(chromeDriver, Duration.ofSeconds(20));
     }
 
     public List<String> getIconSourcesAsStrings() {
-        icons = chromeDriver.findElements(By.xpath(XPaths.ICONS_XPATH));
+        String iconsXpath = "//div[@class='cards-brands cards-brands__container ng-tns-c61-0 ng-trigger ng-trigger-brandsState ng-star-inserted']//img";
+        List<WebElement> icons = chromeDriver.findElements(By.xpath(iconsXpath));
         return icons.stream()
                 .map(element -> element.getAttribute("src"))
                 .collect(Collectors.toList());
     }
 
     public WebElement getButtonForSelectOptionInList(String option) {
-        buttonForSelectOptionInList = chromeDriver.findElement(By.xpath("//p[contains(text(), '" + option + "')]"));
+        WebElement buttonForSelectOptionInList = chromeDriver.findElement(By.xpath("//p[contains(text(), '" + option + "')]"));
         wait.until(ExpectedConditions.elementToBeClickable(buttonForSelectOptionInList));
-        return  buttonForSelectOptionInList;
+        return buttonForSelectOptionInList;
     }
 
     public WebElement getListUnrollButton() {
-        return listUnrollButton;
+        String buttonForListUnrollXpath = "//button[@class='select__header']";
+        return chromeDriver.findElement(By.xpath(buttonForListUnrollXpath));
     }
 
     public WebElement getCookieButton() {
+        String cookieButtonXPath = "//button[@class='btn btn_black cookie__ok']";
+        WebElement cookieButton = chromeDriver.findElement(By.xpath(cookieButtonXPath));
         wait.until(ExpectedConditions.elementToBeClickable(cookieButton));
         return cookieButton;
     }
 
     public List<WebElement> getLogoList() {
+        logoList = chromeDriver.findElements(By.xpath(LOGO_LIST_XPATH));
         return logoList;
     }
 
     public WebElement getButtonInDetails() {
+        String buttonInDetailsXpath = "//a[contains(text(), 'Подробнее о сервисе')]";
+        WebElement buttonInDetails = chromeDriver.findElement(By.xpath(buttonInDetailsXpath));
         wait.until(ExpectedConditions.elementToBeClickable(buttonInDetails));
         return buttonInDetails;
     }
 
     public WebElement getTitle() {
-        return title;
+        String titleOfFormXpath = "//h2[contains(text(), 'Онлайн пополнение')]";
+        return chromeDriver.findElement(By.xpath(titleOfFormXpath));
     }
 
     public WebElement getPlaceHolder(String xPath) {
@@ -77,10 +75,12 @@ public class MTSMainPage {
     }
 
     public List<String> getLogoListAsListOfStrings() {
+        logoList = chromeDriver.findElements(By.xpath(LOGO_LIST_XPATH));
         return logoList.stream()
                 .map(webElement -> webElement.getAttribute("alt"))
                 .collect(Collectors.toList());
     }
+
     public String getCurrentUrl() {
         return chromeDriver.getCurrentUrl();
     }
@@ -89,30 +89,29 @@ public class MTSMainPage {
     Метод для заполнения анкеты в блоке "Услуги связи"
      */
     public void fillCommunicationServices(Map<String, String> inputData) {
-        phoneNumber = chromeDriver.findElement(By.xpath("//div[@class='input-wrapper input-wrapper_label-left']" +
-                        "/input[@class='phone'][../label[@for='connection-phone']]"));
+        WebElement phoneNumber = chromeDriver.findElement(By.xpath("//div[@class='input-wrapper input-wrapper_label-left']" +
+                "/input[@class='phone'][../label[@for='connection-phone']]"));
         phoneNumber.sendKeys(inputData.get("phone"));
 
-        sum = chromeDriver.findElement(By.xpath("//div[@class='input-wrapper input-wrapper_label-right']" +
-                        "/input[@class='total_rub'][../label[@for='connection-sum']]"));
+        WebElement sum = chromeDriver.findElement(By.xpath("//div[@class='input-wrapper input-wrapper_label-right']" +
+                "/input[@class='total_rub'][../label[@for='connection-sum']]"));
         sum.sendKeys(inputData.get("sum"));
 
-        continueButton = chromeDriver.findElement(By.xpath("//form[@class='pay-form opened']/button[contains(text(), " +
-                        "'Продолжить')]"));
+        WebElement continueButton = chromeDriver.findElement(By.xpath("//form[@class='pay-form opened']/button[contains(text(), " +
+                "'Продолжить')]"));
         continueButton.click();
     }
 
     public void waitForVisibilityOfFrame() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(XPaths.IFRAME_XPATH)));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(IFRAME_XPATH)));
     }
 
     public void waitForVisibilityOfFrameThroughAttribute() {
-        wait.until(ExpectedConditions.attributeToBe(By.xpath(XPaths.IFRAME_XPATH), "style", "visibility: visible;"));
+        wait.until(ExpectedConditions.attributeToBe(By.xpath(IFRAME_XPATH), "style", "visibility: visible;"));
     }
 
     public WebElement getIframe() {
-        iframe = chromeDriver.findElement(By.xpath(XPaths.IFRAME_XPATH));
-        return iframe;
+        return chromeDriver.findElement(By.xpath(IFRAME_XPATH));
     }
 
     public String getPlaceHolderAsString(String partOfXpath) {

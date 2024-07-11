@@ -20,7 +20,7 @@ public class Tests extends BaseTests {
     @DisplayName("Проверка названия заголовка")
     @Test
     public void checkTheTitleOfBlock() {
-        comeInSiteAndAcceptCookie(chromeDriver, Links.MTS_LINK);
+        comeInSiteAndAcceptCookie(Links.MTS_LINK);
         checkTheTitle(ExpectedData.EXPECTED_TITLE_OF_MTS_MAIN_PAGE);
 
     }
@@ -31,7 +31,7 @@ public class Tests extends BaseTests {
     @ValueSource(strings = {ExpectedData.VISA, ExpectedData.VERIFIED_BY_VISA, ExpectedData.MASTER_CARD,
             ExpectedData.MASTER_CARD_SECURE_CODE, ExpectedData.BEL_CARD})
     public void checkTheLogoOfBlock(String input) {
-        comeInSiteAndAcceptCookie(chromeDriver, Links.MTS_LINK);
+        comeInSiteAndAcceptCookie(Links.MTS_LINK);
         checkTheLogoByName(input);
         checkTheLogoIsDisplayed();
     }
@@ -40,7 +40,7 @@ public class Tests extends BaseTests {
     @DisplayName("Проверка работы ссылки «Подробнее о сервисе»")
     @Test
     public void checkTheLink() {
-        comeInSiteAndAcceptCookie(chromeDriver, Links.MTS_LINK);
+        comeInSiteAndAcceptCookie(Links.MTS_LINK);
         checkTheButtonInDetails(Links.MTS_LINK);
     }
 
@@ -49,7 +49,7 @@ public class Tests extends BaseTests {
     @ParameterizedTest(name = "{displayName} : {arguments}")
     @MethodSource("provideMapData")
     public void checkInputData(Map<String, String> inputData) {
-        comeInSiteAndAcceptCookie(chromeDriver, Links.MTS_LINK);
+        comeInSiteAndAcceptCookie(Links.MTS_LINK);
         fillTheForm(inputData);
         checkTheButtonContinue();
 
@@ -61,7 +61,7 @@ public class Tests extends BaseTests {
     @MethodSource("providePlaceHolders")
     public void checkPlaceHolders(String option, String phoneXpath, String phoneNumberExpected, String sumXpath,
                                   String sumExpected, String emailXpath, String emailExpected) {
-        comeInSiteAndAcceptCookie(chromeDriver, Links.MTS_LINK);
+        comeInSiteAndAcceptCookie(Links.MTS_LINK);
         chooseTheService(option);
         checkThePlaceHolderInForm(phoneXpath, phoneNumberExpected);
         checkThePlaceHolderInForm(sumXpath, sumExpected);
@@ -69,13 +69,13 @@ public class Tests extends BaseTests {
     }
 
     @Epic(value = "Задание L16")
-    @DisplayName("Проверка корректность отображения суммы (в том числе на кнопке)," +
+    @DisplayName("Проверка корректности отображения суммы (в том числе на кнопке)," +
             " номера телефона, " +
             "а также надписей в незаполненных полях для ввода реквизитов карты, наличие иконок платёжных систем.")
     @ParameterizedTest(name = "{displayName} : {arguments}")
     @MethodSource("provideMapData")
     public void checkPopUp(Map<String, String> inputData) {
-        comeInSiteAndAcceptCookie(chromeDriver, Links.MTS_LINK);
+        comeInSiteAndAcceptCookie(Links.MTS_LINK);
         fillTheForm(inputData);
         switchToAnotherFrame();
         testTheSumInPopUp(inputData);

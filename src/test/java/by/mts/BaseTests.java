@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import ru.netology.driver.ChromeDriverSingleton;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,9 +13,7 @@ public class BaseTests {
 
     @BeforeEach
     public void setChromeDriver() {
-        System.setProperty("webdriver.chrome.driver", System.getenv("CHROME_DRIVER"));
-        //System.setProperty("webdriver.chrome.driver", "C:\\Temp\\chromedriver-win64\\chromedriver.exe");
-        chromeDriver = new ChromeDriver();
+        chromeDriver = ChromeDriverSingleton.getInstance().getDriver();
         chromeDriver.manage().window().maximize();
         chromeDriver.manage().timeouts().pageLoadTimeout(45, TimeUnit.SECONDS);
 
@@ -22,6 +21,6 @@ public class BaseTests {
 
     @AfterEach
     public void after() {
-        chromeDriver.quit();
+        ChromeDriverSingleton.getInstance().quitDriver();
     }
 }
